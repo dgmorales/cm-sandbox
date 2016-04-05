@@ -1,0 +1,11 @@
+- hosts: all
+  tasks:
+  - name: create symlinks for our app
+    file: >
+      state=link src=/opt/myapp/bin/{{ item }}
+      dest=/usr/local/bin/myapp-{{ item }} force=yes
+    with_items:
+      - run
+      - build
+      - update
+      - foo
