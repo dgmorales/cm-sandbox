@@ -14,6 +14,7 @@ TODO:
   - Add Semaphore
 - Add a complex multi-machine example making the same thing on each CM
 - Turn that complex example into a multi distro one (CentOS + Ubuntu)
+- Add Windows demo box?
 
 Someday maybe:
 - Add Chef to the mix
