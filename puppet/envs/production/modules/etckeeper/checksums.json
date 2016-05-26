@@ -1,0 +1,12 @@
+{
+  "CHANGES.md": "3b214338f475599a2985480243c470bb",
+  "LICENSE": "adb87d44dabfe739f1bb86bc2119c8eb",
+  "README.md": "442224451ebad5cfd574e42c38f7a4c6",
+  "Rakefile": "a460cf2a27e9e1e23edf7100e658056c",
+  "manifests/init.pp": "4eafe99b07931a320b3d89755d138793",
+  "metadata.json": "17fb5693bb0098f9b9f0cbb3f7537a6a",
+  "spec/classes/etckeeper_spec.rb": "e63d1fa8b528016c7e91689099a3d757",
+  "spec/spec_helper.rb": "3ea886dd135e120afa31e0aab12e85b0",
+  "templates/etckeeper.conf.erb": "a01511dcd25beb80f5ff21162a6be8f6",
+  "tests/init.pp": "e9d20d92ed5c5b1d36a3f089247f96ba"
+}

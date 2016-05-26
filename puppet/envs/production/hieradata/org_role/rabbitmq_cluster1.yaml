@@ -1,0 +1,47 @@
+# these are parameters of the puppetlabs/rabbitmq class set here via hiera
+rabbitmq::port: 5672
+rabbitmq::runas_user: 'rabbitmq'
+rabbitmq::runas_group: 'rabbitmq'
+rabbitmq::erlang_cookie: 'Lkehw12tkJi[nz8zd9pr.%whrazu!'
+rabbitmq::file_limit: '65536'
+
+# RabbitMQ changed their GPG key and puppetlabs/rabbitmq is still not updated for that
+rabbitmq::package_gpg_key: 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
+rabbitmq::repo::apt::key: '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+
+# these are the parameters of our rabbitmq profile (profile::rabbitmq class)
+profile::rabbitmq::admin_username: 'admin'
+# TODO: hiera-gpg for passwords?
+profile::rabbitmq::admin_password: 'password'
+profile::rabbitmq::cluster_hosts:
+  m1:
+    ip: '192.168.100.11'
+    host_aliases: 'm1.local'
+  m2:
+    ip: '192.168.100.12'
+    host_aliases: 'm2.local'
+
+profile::rabbitmq::apps:
+  app1:
+    user_password: 'app1_password'
+  app2:
+    user_password: 'app2_password'
+
+profile::rabbitmq::other_users:
+  rabbit_monitor:
+    admin: false
+    password: 'mon_password'
+
+profile::rabbitmq::other_perms:
+  'rabbit_monitor@/':
+    configure_permission: ''
+    read_permission: '.*'
+    write_permission: ''
+  'rabbit_monitor@app1':
+    configure_permission: ''
+    read_permission: '.*'
+    write_permission: ''
+  'rabbit_monitor@app2':
+    configure_permission: ''
+    read_permission: '.*'
+    write_permission: ''

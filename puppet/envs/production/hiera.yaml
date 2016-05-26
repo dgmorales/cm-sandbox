@@ -1,0 +1,12 @@
+---
+#
+# org_role ==> organizational role
+#
+:backends:
+  - yaml
+:hierarchy:
+  - hostname/%{hostname}
+  - org_role/%{org_role}
+  - site
+:yaml:
+  :datadir: '/vagrant/puppet/envs/production/hieradata/'

@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# TODO: move this to puppet ::profile::base or something like that
 cd /tmp
 # Puppet agent
 if ! dpkg -l puppet-agent > /dev/null
@@ -31,4 +32,5 @@ then
 	sudo apt-add-repository ppa:ansible/ansible -y
 	sudo apt-get update -y
 	sudo apt-get install ansible -y
+	# there are probably around 2^10 better ways to do this, but anyway ...
 fi

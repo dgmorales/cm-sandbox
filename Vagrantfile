@@ -9,21 +9,50 @@ Vagrant.configure(2) do |config|
 
   config.vm.box = "ubuntu/trusty64"
   config.vm.provision "shell", path: "provision/cm-install.sh"
+  # set some names <=> ips inside all machines
+  config.vm.provision :hosts do |h|
+      # default servers for puppet agents and salt minions
+      h.add_host '192.168.100.5', ['puppet', 'salt']
+  end
+  #TODO: this + below runs puppet twice
+  config.vm.provision "puppet" do |puppet|
+    puppet.environment_path = "puppet/envs"
+  end
 
   config.vm.define :cm do |cm|
+    cm.vm.provider "virtualbox" do |vb|
+       vb.memory = "1024"
+    end
     cm.vm.hostname = "cmserver.local"
     cm.vm.network "private_network", ip: "192.168.100.5", virtualbox__intnet: "cmnet"
+    cm.vm.network "forwarded_port", guest: 80, host: 9080
+    cm.vm.provision "docker" do |d|
+      d.run "redisio", daemonize: true, image: "redis"
+      d.run "mongodb", daemonize: true, image: "mongo", args: "-p 127.0.0.1:27017:27017"
+      d.run "semaphore", daemonize: true, image: "castawaylabs/semaphore", args: "--link redisio:redis --link mongodb:mongo -e MONGODB_URL='mongodb://mongo/semaphore' -e REDIS_HOST='redis' -p 80:80"
+    end
   end
+
+  # specify all these settings only once.
   config.vm.define :m1 do |m1|
+    m1.vm.provision "puppet" do |puppet|
+      puppet.environment_path = "puppet/envs"
+      puppet.manifests_path = "puppet/envs/production/manifests"
+      puppet.manifest_file = "full.pp"
+      puppet.hiera_config_path = "puppet/envs/production/hiera.yaml"
+    end
     m1.vm.hostname = "m1.local"
     m1.vm.network "private_network", ip: "192.168.100.11", virtualbox__intnet: "cmnet"
   end
   config.vm.define :m2 do |m2|
+    m2.vm.provision "puppet" do |puppet|
+      puppet.environment_path = "puppet/envs"
+      puppet.manifests_path = "puppet/envs/production/manifests"
+      puppet.manifest_file = "full.pp"
+      puppet.hiera_config_path = "puppet/envs/production/hiera.yaml"
+    end
     m2.vm.hostname = "m2.local"
     m2.vm.network "private_network", ip: "192.168.100.12", virtualbox__intnet: "cmnet"
-    m2.vm.provision :hosts do |provisioner|
-      provisioner.add_host '192.168.100.50', ['puppet', 'salt']
-    end
   end
   config.vm.define :m3 do |m3|
     m3.vm.hostname = "m3.local"
@@ -32,6 +61,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |vb|
      # Customize the amount of memory on the VM:
-     vb.memory = "384"
+     vb.memory = "512"
   end
 end
