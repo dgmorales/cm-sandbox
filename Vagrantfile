@@ -43,6 +43,7 @@ Vagrant.configure(2) do |config|
     end
     m1.vm.hostname = "m1.local"
     m1.vm.network "private_network", ip: "192.168.100.11", virtualbox__intnet: "cmnet"
+    m1.vm.network "forwarded_port", guest: 15672, host: 15672  # rabbitmq mgmt
   end
   config.vm.define :m2 do |m2|
     m2.vm.provision "puppet" do |puppet|
@@ -53,6 +54,7 @@ Vagrant.configure(2) do |config|
     end
     m2.vm.hostname = "m2.local"
     m2.vm.network "private_network", ip: "192.168.100.12", virtualbox__intnet: "cmnet"
+    m2.vm.network "forwarded_port", guest: 15672, host: 25672  # rabbitmq mgmt
   end
   config.vm.define :m3 do |m3|
     m3.vm.hostname = "m3.local"
