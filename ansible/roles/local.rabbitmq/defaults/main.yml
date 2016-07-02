@@ -1,0 +1,10 @@
+---
+rabbitmq_admin_username: admin
+rabbitmq_admin_password: password
+rabbitmq_clustering: false
+rabbitmq_other_users: []
+rabbitmq_erlang_cookie:
+rabbitmq_erlang_cookie_file: /var/lib/rabbitmq/.erlang.cookie
+rabbitmq_apps:
+  - name: testapp
+    user_password: password

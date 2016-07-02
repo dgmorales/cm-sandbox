@@ -1,0 +1,7 @@
+---
+dependencies:
+  - { role: MichaelRigart.erlang }
+  - { role: MichaelRigart.rabbitmq,
+      rabbitmq_ppa_key: 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc',
+      rabbitmq_ppa_key_id: '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+      }

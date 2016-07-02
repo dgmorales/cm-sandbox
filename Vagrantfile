@@ -18,6 +18,13 @@ Vagrant.configure(2) do |config|
   config.vm.provision "puppet" do |puppet|
     puppet.environment_path = "puppet/envs"
   end
+  # we need to this so vagrant generates the ansible inventory for us
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "ansible/nothing.yml"
+    ansible.groups = {
+      "rabbits" => ["m[1:2]"]
+    }
+  end
 
   config.vm.define :cm do |cm|
     cm.vm.provider "virtualbox" do |vb|
@@ -35,23 +42,23 @@ Vagrant.configure(2) do |config|
 
   # specify all these settings only once.
   config.vm.define :m1 do |m1|
-    m1.vm.provision "puppet" do |puppet|
-      puppet.environment_path = "puppet/envs"
-      puppet.manifests_path = "puppet/envs/production/manifests"
-      puppet.manifest_file = "full.pp"
-      puppet.hiera_config_path = "puppet/envs/production/hiera.yaml"
-    end
+    #m1.vm.provision "puppet" do |puppet|
+    #  puppet.environment_path = "puppet/envs"
+    #  puppet.manifests_path = "puppet/envs/production/manifests"
+    #  puppet.manifest_file = "full.pp"
+    #  puppet.hiera_config_path = "puppet/envs/production/hiera.yaml"
+    #end
     m1.vm.hostname = "m1.local"
     m1.vm.network "private_network", ip: "192.168.100.11", virtualbox__intnet: "cmnet"
     m1.vm.network "forwarded_port", guest: 15672, host: 15672  # rabbitmq mgmt
   end
   config.vm.define :m2 do |m2|
-    m2.vm.provision "puppet" do |puppet|
-      puppet.environment_path = "puppet/envs"
-      puppet.manifests_path = "puppet/envs/production/manifests"
-      puppet.manifest_file = "full.pp"
-      puppet.hiera_config_path = "puppet/envs/production/hiera.yaml"
-    end
+    #m2.vm.provision "puppet" do |puppet|
+    #  puppet.environment_path = "puppet/envs"
+    #  puppet.manifests_path = "puppet/envs/production/manifests"
+    #  puppet.manifest_file = "full.pp"
+    #  puppet.hiera_config_path = "puppet/envs/production/hiera.yaml"
+    #end
     m2.vm.hostname = "m2.local"
     m2.vm.network "private_network", ip: "192.168.100.12", virtualbox__intnet: "cmnet"
     m2.vm.network "forwarded_port", guest: 15672, host: 25672  # rabbitmq mgmt

@@ -1,0 +1,3 @@
+{% from "erlang_encode_macro.j2" import erlang_encode with context -%}
+
+{{ erlang_encode(rabbitmq_conf, convert_bools=true, convert_nums=true) }}

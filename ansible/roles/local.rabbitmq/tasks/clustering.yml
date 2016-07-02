@@ -1,0 +1,54 @@
+---
+# Configure RabbitMQ for cluster
+
+# we don't want 127.0.0.1 associated with the actual hostname (ubuntu's default) on the rabbit
+# hosts, so we fix this here
+- name: Configure localhost entry in /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.0\.1.*'
+    line: "127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain"
+    state: present
+
+# Rabbit hosts need to reach each other by name (shortname in our case)
+# We take advantage of ansible's inventory here, so instead of setting the cluster_hosts
+# inside some var as done in the puppet example, we get them from the rabbits group
+- name: Configure rabbit hosts in /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{ hostvars[item].ansible_eth1.ipv4.address }} {{item}}"
+    state: present
+  when: hostvars[item].ansible_eth1.ipv4.address is defined
+  with_items: "{{ groups['rabbits'] }}"
+  tags: rabbitmq-hostsfile
+
+# UGLY WORKAROUND ALERT:
+# If I am going to change the erlang cookie, I need to stop RabbitMQ BEFORE that change.
+# I found no nicer way to do that than having this mirrored cookie file to act as a canary:
+# whenever it changes, I know the real cookie will change next, and stop rabbitmq.
+- name: Set rabbitmq erlang cookie canary
+  template: src=erlang.cookie.j2 dest={{ rabbitmq_erlang_cookie_file }}.canary owner=rabbitmq group=rabbitmq mode=0400
+  register: erl_cookie_canary
+
+- name: Stop rabbitmq server
+  service: name=rabbitmq-server state=stopped
+  when: erl_cookie_canary.changed
+
+# If the real cookie changes, all cluster data on non-master nodes is going to be erased. So we
+# have to be somewhat careful here.
+# I only change the real cookie if the canary changed above (and the real cookie changed too,
+# of course). So if the real and canary get out of sync somehow (someone messed up externally),
+# we will stay out of that mess.
+- name: Set rabbitmq real erlang cookie
+  template: src=erlang.cookie.j2 dest={{ rabbitmq_erlang_cookie_file }} owner=rabbitmq group=rabbitmq mode=0400
+  when: erl_cookie_canary.changed
+  register: erl_cookie_real
+
+- name: Start rabbitmq server
+  service: name=rabbitmq-server state=started
+  when: erl_cookie_canary.changed
+
+# Join the cluster. Only on non master nodes, when real cookie changed. Will erase their data.
+- include: cluster-join.yml
+  when: erl_cookie_real.changed and ansible_hostname != "{{ rabbitmq_cluster_master }}"

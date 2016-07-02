@@ -1,0 +1,5 @@
+---
+- name: Install RabbitMQ Cluster
+  hosts: rabbits
+  roles:
+    - local.rabbitmq

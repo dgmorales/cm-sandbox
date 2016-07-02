@@ -1,0 +1,4 @@
+- name: Noop playbook for auto provisioning from vagrant
+  hosts: all
+  tasks:
+    - shell: echo Hello World!

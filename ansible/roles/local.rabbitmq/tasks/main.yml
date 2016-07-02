@@ -1,0 +1,32 @@
+---
+- name: Set RabbitMQ Config File
+  copy: src={{ rabbitmq_config_file }} dest=/etc/rabbitmq/rabbitmq.config
+  notify: rabbitmq_restart
+
+- name: Create admin user or reset its password
+  rabbitmq_user:
+    name: "{{ rabbitmq_admin_username }}"
+    password: "{{ rabbitmq_admin_password }}"
+    tags: administrator
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+  tags: rabbitmq-admin
+
+- name: Execute pending handlers now
+  meta: flush_handlers
+
+- include: apps.yml
+  with_items: "{{ rabbitmq_apps }}"
+  tags: rabbitmq-apps
+
+- name: Create other users
+  rabbitmq_user:
+  args: "{{ item }}"
+  with_items: "{{ rabbitmq_other_users }}"
+  tags: rabbitmq-other-users
+
+- include: clustering.yml
+  when: rabbitmq_clustering
+  tags: rabbitmq-clustering

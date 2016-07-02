@@ -1,0 +1,36 @@
+# this is meant to be included in a loop, like:
+# - include: apps.yml
+#   with_items: rabbitmq_apps
+
+# running this way (include with loop), the output for each task bellow does not say anything
+# about which item is being worked on. So let's say it here using debug.
+- debug: msg="Configuring app {{ item.name }}"
+
+- name: Create a vhost for app
+  rabbitmq_vhost: name="/{{ item.name }}"
+- name: Create a specific users for app
+  rabbitmq_user:
+    user: "{{ item.name }}"
+    password: "{{ item.user_password }}"
+    vhost: "/{{ item.name }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+- name: Give admin user full permissions on app vhost
+  rabbitmq_user:
+    tags: administrator
+    user: "{{ rabbitmq_admin_username }}"
+    vhost: "/{{ item.name }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+- name: Set HA policy for app
+  rabbitmq_policy:
+    name: ha
+    vhost: "/{{ item.name }}"
+    pattern: ".*"
+    tags:
+      ha-mode: "exactly"
+      ha-params: 2
+  when: rabbitmq_clustering
