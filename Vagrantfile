@@ -28,16 +28,18 @@ Vagrant.configure(2) do |config|
 
   config.vm.define :cm do |cm|
     cm.vm.provider "virtualbox" do |vb|
-       vb.memory = "1024"
+       vb.memory = "2048"
     end
     cm.vm.hostname = "cmserver.local"
     cm.vm.network "private_network", ip: "192.168.100.5", virtualbox__intnet: "cmnet"
     cm.vm.network "forwarded_port", guest: 80, host: 9080
-    cm.vm.provision "docker" do |d|
-      d.run "redisio", daemonize: true, image: "redis"
-      d.run "mongodb", daemonize: true, image: "mongo", args: "-p 127.0.0.1:27017:27017"
-      d.run "semaphore", daemonize: true, image: "castawaylabs/semaphore", args: "--link redisio:redis --link mongodb:mongo -e MONGODB_URL='mongodb://mongo/semaphore' -e REDIS_HOST='redis' -p 80:80"
-    end
+    cm.vm.network "forwarded_port", guest: 4440, host: 4440
+    #cm.vm.provision "docker" do |d|
+    #  d.run "redisio", daemonize: true, image: "redis"
+    #  d.run "mongodb", daemonize: true, image: "mongo", args: "-p 127.0.0.1:27017:27017"
+    #  d.run "semaphore", daemonize: true, image: "castawaylabs/semaphore", args: "--link redisio:redis --link mongodb:mongo -e MONGODB_URL='mongodb://mongo/semaphore' -e REDIS_HOST='redis' -p 80:80"
+    #  d.run "rundeck", daemonize: true, image: "jordan/rundeck", args: "-p 4440:4440 -e SERVER_URL=http://127.0.0.1:4440 -v /opt/rundeck-plugins:/opt/rundeck-plugins"
+    #end
   end
 
   # specify all these settings only once.

@@ -1,0 +1,25 @@
+---
+- name: Install Rundeck
+  hosts: cm
+  vars:
+    rundeck_ansible_keydir: /var/lib/rundeck/var/ansible
+    rundeck_ansible_key: '{{ rundeck_ansible_keydir }}/master'
+  roles:
+    - { role: smola.java, java_packages: [ 'openjdk-7-jre-headless' ], tags: roles}
+    - { role: neel.rundeck,
+        rundeck_plugins: [
+          'https://github.com/Batix/rundeck-ansible-plugin/releases/download/1.3.0/ansible-plugin-1.3.0.jar'
+        ],
+        tags: roles
+      }
+  tasks:
+    - name: Copy ansible.cfg file
+      template: src=files/ansible.cfg dest=/etc/ansible/ansible.cfg
+    - name: Create dir to store ansible key for use with rundeck
+      file: state=directory dest='{{ rundeck_ansible_keydir }}' mode=0750 owner=rundeck
+    - name: Copy our master SSH private key to the dir
+      copy:
+        src: ../provision/ssh/master
+        dest: '{{ rundeck_ansible_key }}'
+        owner: rundeck
+        mode: 0600

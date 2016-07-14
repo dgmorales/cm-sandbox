@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: Matthew Green
+  company: New Edge Engineering
+  description: installation and configuration of rundeck
+  min_ansible_version: 1.7
+  license: MIT
+  platforms:
+  - name: Ubuntu
+    versions:
+    - precise
+    - trusty
+  - name: EL
+    versions:
+    - 6
+    - 7
+  categories:
+  - system
+
+dependencies: []
