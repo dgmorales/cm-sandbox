@@ -1,28 +1,29 @@
 rabbitmq_clustering: true
 rabbitmq_cluster_master: m1
 rabbitmq_erlang_cookie: 'Lkehw12tkJi[nz8zd9pr.%whrazu!'
-rabbitmq_config_file: files/etc/rabbitmq/rabbitmq.config 
+rabbitmq_config_file: files/etc/rabbitmq/rabbitmq.config
 rabbitmq_apps:
   - name: app1
     user_password: app1_password
   - name: app2
     user_password: app2_password
 
-rabbitmq_other_users:
-  # we're not going to create app specific users here
-  # those will be created by playbook based on rabbitmq_apps above
-  - name: rabbit_monitor
-    tags: management
-    permissions:
-      - vhost: /app2
-        configure_priv: ^$
-        read_priv: .*
-        write_priv: ^$
-      - vhost: /app1
-        configure_priv: ^$
-        read_priv: .*
-        write_priv: ^$
-      - vhost: /
-        configure_priv: ^$
-        read_priv: .*
-        write_priv: ^$
+#rabbitmq_other_users:
+# weird error on permissions parameter, will check it out later
+## we're not going to create app specific users here
+## those will be created by playbook based on rabbitmq_apps above
+#- name: rabbit_monitor
+#  tags: management
+#  permissions:
+#    - vhost: /app2
+#      configure_priv: ^$
+#      read_priv: .*
+#      write_priv: ^$
+#    - vhost: /app1
+#      configure_priv: ^$
+#      read_priv: .*
+#      write_priv: ^$
+#    - vhost: /
+#      configure_priv: ^$
+#      read_priv: .*
+#      write_priv: ^$
