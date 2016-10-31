@@ -13,20 +13,13 @@ node 'cmserver.local' {
     group  => 'root',
     mode   => '0644',
   }
-
-  $mhosts = {
-    'm1' => '192.168.100.11',
-    'm2' => '192.168.100.12',
-    'm3' => '192.168.100.13',
-  }
-  $mhosts.each |String $shortname, $ip| {
-    host {"${shortname}.local":
-      ip           => $ip,
-      host_aliases => $shortname,
-    }
-  }
 }
 
 node default {
   include ::role::base
+}
+
+node 'saltmaster.local' {
+  include ::role::base
+  include ::role::saltmaster
 }
