@@ -7,13 +7,15 @@
 # you're doing.
 Vagrant.configure(2) do |config|
 
-  config.vm.box = "bento/ubuntu-16.04"
-  config.vm.provision "shell", path: "provision/cm-install.sh"
+  #config.vm.box = "bento/ubuntu-16.04"
+  config.vm.box = "bento/centos-7.2"
+  config.vm.provision "shell", path: "provision/prepare.sh"
   # set some names <=> ips inside all machines
   config.vm.provision :hosts do |h|
       # default servers for puppet agents and salt minions
       h.add_host '192.168.100.5', ['puppet']
       h.add_host '192.168.100.6', ['salt']
+      h.add_host '192.168.100.7', ['ansible']
       h.add_host '192.168.100.11', ['m1.local', 'm1']
       h.add_host '192.168.100.12', ['m2.local', 'm2']
       h.add_host '192.168.100.13', ['m3.local', 'm3']
@@ -39,9 +41,6 @@ Vagrant.configure(2) do |config|
     }
   end
 
-  config.vm.synced_folder "salt/root/", "/srv/salt/"
-
-
   config.vm.define :cm do |cm|
     cm.vm.provider "virtualbox" do |vb|
        vb.memory = "2048"
@@ -64,8 +63,17 @@ Vagrant.configure(2) do |config|
     end
     cm2.vm.hostname = "saltmaster.local"
     cm2.vm.network "private_network", ip: "192.168.100.6", virtualbox__intnet: "cmnet"
+    cm2.vm.synced_folder "salt/root/", "/srv/salt/"
     #cm2.vm.network "forwarded_port", guest: 80, host: 9080
     #cm2.vm.network "forwarded_port", guest: 4440, host: 4440
+  end
+
+  config.vm.define :ansiblecm do |cm3|
+    cm3.vm.provider "virtualbox" do |vb|
+       vb.memory = "1024"
+    end
+    cm3.vm.hostname = "ansiblecm.local"
+    cm3.vm.network "private_network", ip: "192.168.100.7", virtualbox__intnet: "cmnet"
   end
 
   # specify all these settings only once.

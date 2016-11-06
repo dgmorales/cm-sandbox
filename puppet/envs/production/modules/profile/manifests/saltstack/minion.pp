@@ -1,13 +1,20 @@
 class profile::saltstack::minion {
-  include apt
-  
-  apt::source { 'saltstack':
-    location => "http://repo.saltstack.com/apt/ubuntu/${::os.release.full}/amd64/latest",
-    key      => "https://repo.saltstack.com/apt/ubuntu/${::os.release.full}/amd64/latest/SALTSTACK-GPG-KEY.pub",
-    repos    => "${::os.release.codename} main",
+
+  # as told in https://repo.saltstack.com/#rhel
+
+  package {'salt-repo':
+    ensure   => 'present',
+    provider => 'rpm',
+    source   => 'https://repo.saltstack.com/yum/redhat/salt-repo-latest-1.el7.noarch.rpm',
+    notify   => Exec['/bin/yum clean expire-cache'],
+  }
+
+  exec {'/bin/yum clean expire-cache':
+    refreshonly => true,
   }
 
   package {'salt-minion':
-    ensure => installed,
+    ensure  => installed,
+    require => Package['salt-repo'],
   }
 }

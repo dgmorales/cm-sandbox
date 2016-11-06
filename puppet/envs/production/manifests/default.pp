@@ -18,8 +18,3 @@ node 'cmserver.local' {
 node default {
   include ::role::base
 }
-
-node 'saltmaster.local' {
-  include ::role::base
-  include ::role::saltmaster
-}

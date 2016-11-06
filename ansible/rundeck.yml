@@ -1,6 +1,14 @@
 ---
+- name: Install Ansible
+  hosts: ansiblecm
+  roles:
+    - geerlingguy.repo-epel
+  tasks:
+    - name: Install ansible package from EPEL
+      package: name=ansible
+
 - name: Install Rundeck
-  hosts: cm
+  hosts: ansiblecm
   vars:
     rundeck_ansible_keydir: /var/lib/rundeck/var/ansible
     rundeck_ansible_key: '{{ rundeck_ansible_keydir }}/master'
@@ -8,7 +16,7 @@
     - { role: smola.java, java_packages: [ 'openjdk-7-jre-headless' ], tags: roles}
     - { role: neel.rundeck,
         rundeck_plugins: [
-          'https://github.com/Batix/rundeck-ansible-plugin/releases/download/1.3.0/ansible-plugin-1.3.0.jar'
+          'https://github.com/Batix/rundeck-ansible-plugin/releases/download/2.0.2/ansible-plugin-2.0.2.jar'
         ],
         tags: roles
       }
