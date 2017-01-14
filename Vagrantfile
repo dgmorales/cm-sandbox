@@ -47,8 +47,8 @@ Vagrant.configure(2) do |config|
     end
     cm.vm.hostname = "cmserver.local"
     cm.vm.network "private_network", ip: "192.168.100.5", virtualbox__intnet: "cmnet"
-    cm.vm.network "forwarded_port", guest: 80, host: 9080
-    cm.vm.network "forwarded_port", guest: 4440, host: 4440
+    #cm.vm.network "forwarded_port", guest: 80, host: 9080
+    #cm.vm.network "forwarded_port", guest: 4440, host: 4440
     #cm.vm.provision "docker" do |d|
     #  d.run "redisio", daemonize: true, image: "redis"
     #  d.run "mongodb", daemonize: true, image: "mongo", args: "-p 127.0.0.1:27017:27017"
@@ -72,8 +72,24 @@ Vagrant.configure(2) do |config|
     cm3.vm.provider "virtualbox" do |vb|
        vb.memory = "1024"
     end
+    #cm3.vm.provision "ansible" do |ansible|
+    #  ansible.playbook = "ansible/ansible.yml"
+    #end
     cm3.vm.hostname = "ansiblecm.local"
     cm3.vm.network "private_network", ip: "192.168.100.7", virtualbox__intnet: "cmnet"
+    #cm3.vm.network "forwarded_port", guest: 80, host: 9080
+    cm3.vm.network "forwarded_port", guest: 4440, host: 4440
+  end
+
+  config.vm.define :manageiq do |cm4|
+    cm4.vm.box = "manageiq/euwe"
+    cm4.vm.provider "virtualbox" do |vb|
+       vb.memory = "6144"
+       vb.cpus = "4"
+    end
+    cm4.vm.hostname = "manageiq.local"
+    cm4.vm.network "private_network", ip: "192.168.100.8", virtualbox__intnet: "cmnet"
+    cm4.vm.network "forwarded_port", guest: 443, host: 8443
   end
 
   # specify all these settings only once.
@@ -103,8 +119,9 @@ Vagrant.configure(2) do |config|
     m3.vm.hostname = "m3.local"
     m3.vm.network "private_network", ip: "192.168.100.13", virtualbox__intnet: "cmnet"
   end
+
   config.vm.define :w1 do |w1|
-    w1.vm.box = 'win2016_cmbox'
+    w1.vm.box = 'mwrock/Windows2016'
     w1.vm.hostname = "w1"
     w1.vm.communicator = "winrm"
 
@@ -123,8 +140,31 @@ Vagrant.configure(2) do |config|
         v.customize ["modifyvm", :id, "--memory", 2048]
         v.customize ["modifyvm", :id, "--cpus", 2]
         v.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+        config.vm.provider :virtualbox do |vb|
+         vb.customize ["storageattach", :id, "--storagectl", "IDE Controller", "--port", "1", "--device", "0", "--type", "dvddrive", "--medium", "/home/morales/downloads/ISOs/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO"]
+       end
     end
-
   end
+  config.vm.define :w2 do |w2|
+    w2.vm.box = 'mwrock/Windows2016'
+    w2.vm.hostname = "w2"
+    w2.vm.communicator = "winrm"
 
+    # Admin user name and password
+    w2.winrm.username = "vagrant"
+    w2.winrm.password = "vagrant"
+
+    w2.vm.guest = :windows
+    w2.windows.halt_timeout = 15
+
+    w2.vm.network "private_network", ip: "192.168.100.22", virtualbox__intnet: "cmnet"
+    w2.vm.network :forwarded_port, guest: 3389, host: 33390, id: "rdp", auto_correct: true
+
+    w2.vm.provider :virtualbox do |v, override|
+        v.gui = true
+        v.customize ["modifyvm", :id, "--memory", 2048]
+        v.customize ["modifyvm", :id, "--cpus", 2]
+        v.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+    end
+  end
 end

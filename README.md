@@ -3,6 +3,15 @@ Vagrant environment showcasing Puppet, Ansible, Salt with examples and associate
 
 For now we have only some machines with puppet, ansible and salt installed  and a couple examples of code in each.
 
+
+## Ansible Control Machine
+
+### Rundeck
+
+Default users and pass:
+- admin/admin
+- user/user
+
 TODO:
 
 - Install Puppet Server, with PuppetDB and Puppet Explorer

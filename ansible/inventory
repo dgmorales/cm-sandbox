@@ -1,6 +1,11 @@
 m1
 m2
 m3
+w1
+w2
 
 [rabbits]
 m[1:2]
+
+[windows]
+w[1:2]

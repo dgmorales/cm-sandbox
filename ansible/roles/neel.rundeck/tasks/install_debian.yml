@@ -4,7 +4,7 @@
   apt:
     name: "{{ item }}"
     state: present
-  sudo: yes
+  become: yes
   with_items:
     - python-pip
 
@@ -12,7 +12,7 @@
   pip:
     name: "{{ item }}"
     state: present
-  sudo: yes
+  become: yes
   with_items:
     - httplib2
 
@@ -67,7 +67,6 @@
     dest: "{{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
     url: "http://download.rundeck.org/deb/{{ rundeck_deb_package.stdout }}"
     mode: 0644
-    timeout: 1200
   register: rundeck_downloaded
   when: rundeck_download_check is defined and rundeck_download_check.stat.exists == false
   tags:
@@ -80,7 +79,7 @@
   when: (rundeck_download_check is defined and rundeck_download_check.stat.exists == true) or rundeck_downloaded|changed
   changed_when: "dpkg_result.stdout.startswith('Selecting')"
   register: dpkg_result
-  sudo: yes
+  become: yes
   notify:
     - restart rundeck
   tags:

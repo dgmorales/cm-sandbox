@@ -1,4 +1,5 @@
 - hosts: all
+  become: true
   name: Install SSH Server
   tasks:
   - package: name=openssh-server state=present

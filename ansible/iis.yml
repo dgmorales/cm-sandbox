@@ -1,0 +1,53 @@
+---
+- hosts: windows
+  vars:
+    ansible_site_path: "c:\\inetpub\\wwwroot\\ansibletest"
+    staging_path: "c:\\deploy"
+    ansible_test_staging_path: "{{ staging_path }}\\ansible-test-site-{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}"
+  tasks:
+  - name: install-iis
+    win_feature:
+      name: "Web-Server"
+      state: present
+      restart: no
+      include_sub_features: yes
+      include_management_tools: no
+  - name: create staging path
+    win_file: path={{ staging_path }} state=directory
+
+  - name: default-website-index
+    win_copy:
+      src: files/index.html
+      dest: "C:\\inetpub\\wwwroot\\index.html"
+
+  - name: create new website's directory
+    win_file: path={{ ansible_site_path }} state=directory
+  - name: create new website
+    win_iis_website:
+      name: "Ansible Test Site"
+      state: started
+      port: 8080
+      physical_path: "{{ ansible_site_path }}"
+  - name: Open site's port on firewall
+    win_firewall_rule:
+      name: mysite8080
+      enable: yes
+      state: present
+      localport: 8080
+      action: Allow
+      direction: In
+      protocol: Tcp
+    tags: firewall
+
+  - name: create deploy staging path
+    win_file: path={{ ansible_test_staging_path }} state=directory
+  - name: get code to deploy staging path
+    win_copy:
+      src: files/site.zip
+      dest: "{{ ansible_test_staging_path }}"
+  - name: unzip code to site path
+    win_unzip:
+      src: "{{ ansible_test_staging_path }}\\site.zip"
+      dest: "{{ ansible_site_path }}"
+      creates: "{{ ansible_site_path }}\\index.html"
+    tags: unzip
