@@ -1,0 +1,4 @@
+ curl  -H "X-Rundeck-Auth-Token: maWhDIlNoHBMqP8WzrHiewPkFDqYdPP7" http://localhost:4440/api/14/project/cmbox-linux-pass/jobs
+ curl  -H "X-Rundeck-Auth-Token: maWhDIlNoHBMqP8WzrHiewPkFDqYdPP7" http://localhost:4440/api/12/job/33c6a8d5-0e3e-44d7-a4c7-24149387b664/executions
+ curl  -H "X-Rundeck-Auth-Token: maWhDIlNoHBMqP8WzrHiewPkFDqYdPP7" http://localhost:4440/api/12/job/33c6a8d5-0e3e-44d7-a4c7-24149387b664/run
+
