@@ -1,6 +1,5 @@
 Ansible Erlang Role
 ===================
-[![Build Status](https://semaphoreci.com/api/v1/projects/eaf7bd15-ef5a-46f4-90e5-95e95777096e/459439/badge.svg)](https://semaphoreci.com/michaelrigart/ansible-role-erlang)
 
 An ansible role for installing Erlang.
 
@@ -24,7 +23,7 @@ Example Playbook
 ```yaml
 - hosts: servers
   roles:
-     - { role: MichaelRigart.erlang, sudo: Yes }
+     - { role: MichaelRigart.erlang, become: true }
 ```
 
 License

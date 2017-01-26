@@ -1,0 +1,18 @@
+---
+- name: Install Nginx
+  hosts: all
+  become: true
+  roles:
+    - geerlingguy.nginx
+  vars:
+    my_port: 81
+    docroot: "/var/www/nginx-example"
+    nginx_vhosts:
+      - listen: "{{ my_port }} default_server"
+        server_name: "example.com"
+        root: "{{ docroot }}"
+  tasks:
+    - name: create docroot
+      file: name="{{ docroot }}" state=directory
+    - name: create index.html
+      template: src=files/index-nginx-example.html.j2 dest={{ docroot }}/index.html

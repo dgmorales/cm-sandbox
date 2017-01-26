@@ -1,8 +1,8 @@
 ---
 
 rabbitmq_ppa_repo: 'deb http://www.rabbitmq.com/debian testing main'
-rabbitmq_ppa_key: 'http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
-rabbitmq_ppa_key_id: '056E8E56'
+rabbitmq_ppa_key: 'https://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
+rabbitmq_ppa_key_id: '6026DFCA'
 rabbitmq_packages:
   - rabbitmq-server
 rabbitmq_service_state: 'started'

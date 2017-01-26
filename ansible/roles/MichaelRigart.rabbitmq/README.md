@@ -1,6 +1,5 @@
 Ansible RabbitMQ Role
 =====================
-[![Build Status](https://semaphoreci.com/api/v1/projects/0338291a-5bfc-4dca-9ec4-b2f480183e30/461774/badge.svg)](https://semaphoreci.com/michaelrigart/ansible-role-rabbitmq)
 
 An ansible role for installing RabbitMQ.
 
@@ -31,7 +30,7 @@ Example Playbook
 ```yaml
 - hosts: servers
   roles:
-     - { role: MichaelRigart.rabbitmq, sudo: Yes }
+     - { role: MichaelRigart.rabbitmq, become: true }
 ```
 
 License

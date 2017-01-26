@@ -89,7 +89,18 @@ Vagrant.configure(2) do |config|
     end
     cm4.vm.hostname = "manageiq.local"
     cm4.vm.network "private_network", ip: "192.168.100.8", virtualbox__intnet: "cmnet"
-    cm4.vm.network "forwarded_port", guest: 443, host: 8443
+    cm4.vm.network "forwarded_port", guest: 443, host: 8444
+  end
+
+  config.vm.define :tower do |cm5|
+    cm5.vm.box = "ansible/tower"
+    cm5.vm.provider "virtualbox" do |vb|
+       vb.memory = "1024"
+    end
+    cm5.vm.hostname = "tower.local"
+    cm5.vm.network "private_network", ip: "192.168.100.9", virtualbox__intnet: "cmnet"
+    cm5.vm.network "forwarded_port", guest: 443, host: 8443
+    cm5.vm.boot_timeout = 600
   end
 
   # specify all these settings only once.

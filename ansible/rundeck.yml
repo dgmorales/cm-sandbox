@@ -7,15 +7,13 @@
   tasks:
     - name: Install ansible package from EPEL
       package: name=ansible
-    - name: Copy ansible.cfg file
-      template: src=files/ansible.cfg dest=/etc/ansible/ansible.cfg
 
 - name: Install Rundeck
   hosts: ansiblecm
   become: true
   vars:
     rundeck_ansible_keydir: /var/lib/rundeck/var/ansible
-    rundeck_ansible_key: '{{ rundeck_ansible_keydir }}/master'
+    rundeck_ansible_key: "{{ rundeck_ansible_keydir }}/master"
   roles:
     - { role: geerlingguy.java, tags: roles}
     - { role: neel.rundeck,
@@ -25,6 +23,8 @@
         tags: roles
       }
   tasks:
+    - name: Copy ansible.cfg file
+      template: src=files/ansible.cfg dest=/etc/ansible/ansible.cfg
     - name: Install rundeck-cli
       package: name=rundeck-cli state=present
     - name: Create dir to store ansible key for use with rundeck
@@ -32,6 +32,6 @@
     - name: Copy our master SSH private key to the dir
       copy:
         src: ../provision/ssh/master
-        dest: '{{ rundeck_ansible_key }}'
+        dest: "{{ rundeck_ansible_key }}"
         owner: rundeck
         mode: 0600
