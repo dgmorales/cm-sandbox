@@ -1,0 +1,14 @@
+---
+
+- include: package.yml
+  tags: package
+
+- include: configuration.yml
+  tags: configuration
+
+- name: start/stop rabbitmq service
+  service:
+    name: rabbitmq-server
+    state: '{{ rabbitmq_service_state }}'
+    enabled: '{{ rabbitmq_service_enabled }}'
+  tags: service

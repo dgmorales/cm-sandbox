@@ -1,0 +1,23 @@
+---
+
+- name: repository - add the GPG key
+  apt_key:
+    url: '{{ rabbitmq_ppa_key }}'
+    id: '{{ rabbitmq_ppa_key_id }}'
+    state: present
+  when: rabbitmq_ppa_key != None
+
+- name: add repository to install RabbitMQ from
+  apt_repository:
+    repo: '{{ rabbitmq_ppa_repo }}'
+    update_cache: yes
+  when: rabbitmq_ppa_repo != None
+
+- name: install packages
+  apt:
+    pkg: '{{ item }}'
+    state: installed
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items: rabbitmq_packages
+  notify: rabbitmq_restart

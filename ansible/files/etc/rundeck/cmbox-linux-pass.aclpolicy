@@ -1,0 +1,27 @@
+---
+for:
+  resource:
+  - allow: read
+  job:
+  - allow: '*'
+  node:
+  - allow: '*'
+description: generated
+context:
+  project: cmbox-linux-pass
+by:
+  username: user1
+---
+for:
+  project:
+  - allow: read
+    equals:
+      name: cmbox-linux-pass
+  storage:
+  - allow: '*'
+description: generated
+context:
+  application: rundeck
+by:
+  username: user1
+

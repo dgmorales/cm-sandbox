@@ -1,0 +1,45 @@
+---
+
+- name: default file
+  template:
+    src: default-rabbitmq-server.j2
+    dest: /etc/default/rabbitmq-server
+    owner: root
+    group: root
+    mode: 0644
+  when: rabbitmq_default_conf != None
+  notify: rabbitmq_restart
+
+- name: rabbitmq-env.config file
+  template:
+    src: rabbitmq-env.j2
+    dest: /etc/rabbitmq/rabbitmq-env.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: rabbitmq_env_conf != None
+  notify: rabbitmq_restart
+
+- name: rabbitmq.config file
+  template:
+    src: rabbitmq.j2
+    dest: /etc/rabbitmq/rabbitmq.config
+    owner: root
+    group: root
+    mode: 0644
+  when: rabbitmq_conf != None
+  notify: rabbitmq_restart
+
+- name: enable rabbitmq plugins
+  rabbitmq_plugin:
+    names: '{{ rabbitmq_enable_plugins | join(",") }}'
+    state: enabled
+  when: rabbitmq_enable_plugins != None
+  notify: rabbitmq_restart
+
+- name: disable rabbitmq plugins
+  rabbitmq_plugin:
+    names: '{{ rabbitmq_disable_plugins | join(",") }}'
+    state: disabled
+  when: rabbitmq_disable_plugins != None
+  notify: rabbitmq_restart
