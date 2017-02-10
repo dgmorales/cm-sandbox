@@ -13,6 +13,6 @@
         root: "{{ docroot }}"
   tasks:
     - name: create docroot
-      file: name="{{ docroot }}" state=directory
+      file: name="{{ docroot }}" state=directory force=true
     - name: create index.html
       template: src=files/index-nginx-example.html.j2 dest={{ docroot }}/index.html

@@ -16,6 +16,8 @@ Vagrant.configure(2) do |config|
       h.add_host '192.168.100.5', ['puppet']
       h.add_host '192.168.100.6', ['salt']
       h.add_host '192.168.100.7', ['ansible']
+      h.add_host '192.168.100.8', ['manageiq']
+      h.add_host '192.168.100.9', ['tower']
       h.add_host '192.168.100.11', ['m1.local', 'm1']
       h.add_host '192.168.100.12', ['m2.local', 'm2']
       h.add_host '192.168.100.13', ['m3.local', 'm3']

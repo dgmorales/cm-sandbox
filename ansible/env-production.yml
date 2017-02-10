@@ -1,0 +1,10 @@
+---
+- hosts: m1
+  become: true
+  roles:
+    - geerlingguy.nginx
+
+- hosts: m2
+  become: true
+  roles:
+    - local.rabbitmq
